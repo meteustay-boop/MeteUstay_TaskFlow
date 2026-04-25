@@ -21,10 +21,14 @@ export default function LoginPage() {
     setLoading(true)
 
     const supabase = createClient()
-    const { error } = await supabase.auth.signInWithPassword({
+    console.log("[v0] Attempting sign in with:", email)
+    
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     })
+
+    console.log("[v0] Sign in result:", { data, error })
 
     if (error) {
       setError(error.message)
@@ -32,6 +36,7 @@ export default function LoginPage() {
       return
     }
 
+    console.log("[v0] Sign in successful, redirecting to /home")
     router.push("/home")
     router.refresh()
   }

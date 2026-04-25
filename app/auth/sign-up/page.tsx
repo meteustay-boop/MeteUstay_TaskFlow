@@ -34,26 +34,34 @@ export default function SignUpPage() {
       },
     })
 
+    console.log("[v0] Sign up result:", { data, signUpError })
+
     if (signUpError) {
       setError(signUpError.message)
       setLoading(false)
       return
     }
 
-    // If user was created, sign them in immediately
-    if (data.user) {
-      const { error: signInError } = await supabase.auth.signInWithPassword({
+    // Check if user needs email confirmation
+    if (data.user && !data.session) {
+      console.log("[v0] User created but no session - email confirmation might be required")
+      // Try to sign in anyway - if email confirmation is disabled in Supabase, this will work
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
+      
+      console.log("[v0] Sign in attempt result:", { signInData, signInError })
 
       if (signInError) {
-        setError(signInError.message)
+        // If sign in fails, it's likely email confirmation is enabled
+        setError("Account created! Please check your email to confirm, or contact admin to disable email confirmation.")
         setLoading(false)
         return
       }
     }
 
+    console.log("[v0] Redirecting to /home")
     // Redirect directly to home - no confirmation needed
     router.push("/home")
     router.refresh()
