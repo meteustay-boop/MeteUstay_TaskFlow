@@ -1,15 +1,20 @@
-import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import type { Metadata, Viewport } from 'next'
+import { Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
-const _geist = Geist({ subsets: ["latin"] });
-const _geistMono = Geist_Mono({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
+  title: 'TaskFlow - Kanban Board',
+  description: 'A mobile-first Kanban project management app',
   generator: 'v0.app',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'TaskFlow',
+  },
   icons: {
     icon: [
       {
@@ -29,14 +34,23 @@ export const metadata: Metadata = {
   },
 }
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: 'cover',
+  themeColor: '#0f172a',
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body className="font-sans antialiased">
+    <html lang="en" className="dark bg-background">
+      <body className={`${inter.className} antialiased`}>
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
